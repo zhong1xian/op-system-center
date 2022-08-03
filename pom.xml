@@ -98,6 +98,28 @@
       <groupId>commons-validator</groupId>
       <artifactId>commons-validator</artifactId>
     </dependency>
+    <!-- 权限模块 -->
+    <dependency>
+      <groupId>com.only4play</groupId>
+      <artifactId>op-security-spring-boot-starter</artifactId>
+      <version>3.0.0-SNAPSHOT</version>
+    </dependency>
+    <!-- 监控模块-->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-prometheus-starter</artifactId>
+      <version>0.11.0.RELEASE</version>
+    </dependency>
+    <!-- 监控模块-->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-logging</artifactId>
+    </dependency>
+
   </dependencies>
   <profiles>
     <profile>

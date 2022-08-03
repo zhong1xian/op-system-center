@@ -18,9 +18,12 @@ import com.only4play.system.domain.template.objecttemplate.vo.TemplateCategoryVO
 import java.lang.Long;
 import java.lang.String;
 import java.util.stream.Collectors;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RequestMapping("templateCategory/v1")
 @RequiredArgsConstructor
+@Validated
 public class TemplateCategoryController {
   private final ITemplateCategoryService templateCategoryService;
 
@@ -50,7 +54,7 @@ public class TemplateCategoryController {
    */
   @PostMapping("updateTemplateCategory")
   public JsonObject<String> updateTemplateCategory(
-      @RequestBody TemplateCategoryUpdateRequest request) {
+      @Valid @RequestBody TemplateCategoryUpdateRequest request) {
     TemplateCategoryUpdater updater = TemplateCategoryMapper.INSTANCE.request2Updater(request);
     templateCategoryService.updateTemplateCategory(updater);
     return JsonObject.success(CodeEnum.Success.getName());
