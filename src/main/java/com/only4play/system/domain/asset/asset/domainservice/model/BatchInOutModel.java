@@ -3,7 +3,6 @@ package com.only4play.system.domain.asset.asset.domainservice.model;
 import com.only4play.common.annotation.FieldDesc;
 import com.only4play.system.domain.asset.assetrecord.InOutBizType;
 import lombok.Data;
-
 import java.util.List;
 
 /**
@@ -28,9 +27,6 @@ public class BatchInOutModel {
 
     @FieldDesc(name = "批次号")
     private String batchNo;
-
-    @FieldDesc(name = "自动生成批次号")
-    private String genBatchNo;
 
     @FieldDesc(name = "skuId")
     private Long skuId;

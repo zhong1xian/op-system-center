@@ -6,7 +6,7 @@ import com.only4play.system.domain.asset.asset.domainservice.model.TransferModel
 public interface IAssetDomainService {
 
     /**
-     * 资产出入
+     * 资产入库
      * @param batchInOutModel
      */
     void handleAssetIn(BatchInOutModel batchInOutModel);

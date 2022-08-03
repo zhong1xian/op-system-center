@@ -4,31 +4,15 @@ package com.only4play.system.domain.asset.assetrecord.service;
 import com.only4play.common.model.PageRequestWrapper;
 import com.only4play.system.domain.asset.assetrecord.creator.AssetInOutRecordCreator;
 import com.only4play.system.domain.asset.assetrecord.query.AssetInOutRecordQuery;
-import com.only4play.system.domain.asset.assetrecord.updater.AssetInOutRecordUpdater;
 import com.only4play.system.domain.asset.assetrecord.vo.AssetInOutRecordVO;
-import java.lang.Long;
+import java.util.List;
 import org.springframework.data.domain.Page;
 
 public interface IAssetInOutRecordService {
   /**
    * create
    */
-  Long createAssetInOutRecord(AssetInOutRecordCreator creator);
-
-  /**
-   * update
-   */
-  void updateAssetInOutRecord(AssetInOutRecordUpdater updater);
-
-  /**
-   * valid
-   */
-  void validAssetInOutRecord(Long id);
-
-  /**
-   * invalid
-   */
-  void invalidAssetInOutRecord(Long id);
+  Long createAssetInOutRecord(List<String> uniqueCodes, AssetInOutRecordCreator creator);
 
   /**
    * findById

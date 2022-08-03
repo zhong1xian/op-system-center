@@ -21,6 +21,7 @@ public class TemplateServiceTest {
         creator.setCategoryId(1L);
         creator.setName("充电桩模板");
         creator.setDescription("充电桩模板");
+        creator.setCode("stake_template");
         objectTemplateService.createObjectTemplate(creator);
     }
 }

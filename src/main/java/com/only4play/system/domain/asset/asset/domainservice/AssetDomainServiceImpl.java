@@ -2,6 +2,7 @@ package com.only4play.system.domain.asset.asset.domainservice;
 
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.IdUtil;
+import com.only4play.common.exception.BusinessException;
 import com.only4play.jpa.support.EntityOperations;
 import com.only4play.system.domain.asset.asset.Asset;
 import com.only4play.system.domain.asset.asset.QAsset;
@@ -12,6 +13,7 @@ import com.only4play.system.domain.asset.asset.domainservice.model.TransferModel
 import com.only4play.system.domain.asset.asset.mapper.AssetMapper;
 import com.only4play.system.domain.asset.asset.repository.AssetRepository;
 import com.only4play.system.domain.asset.assetrecord.InOutBizType;
+import com.only4play.system.infrastructure.constants.AssetErrorCode;
 import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +39,7 @@ public class AssetDomainServiceImpl implements IAssetDomainService {
                 .genBatchNo(genBatchNo)
                 .inOutBizType(batchInOutModel.getInOutBizType())
                 .uniqueCodes(batchInOutModel.getUniqueCodes())
+                .operateUser(batchInOutModel.getOperateUser())
                 .build();
         batchInOutModel.getUniqueCodes()
                 .stream()
@@ -81,6 +84,7 @@ public class AssetDomainServiceImpl implements IAssetDomainService {
                 .genBatchNo(genBatchNo)
                 .inOutBizType(batchInOutModel.getInOutBizType())
                 .uniqueCodes(batchInOutModel.getUniqueCodes())
+                .operateUser(batchInOutModel.getOperateUser())
                 .build();
         batchInOutModel.getUniqueCodes()
                 .stream()
@@ -90,14 +94,15 @@ public class AssetDomainServiceImpl implements IAssetDomainService {
                             .and(QAsset.asset.uniqueCode.eq(code))
                             .and(QAsset.asset.skuId.eq(batchInOutModel.getSkuId()));
                     Optional<Asset> old = assetRepository.findOne(bb);
-                    old.ifPresent(o -> {
-                        //如果已经存在则可以出库
+                    if(!old.isPresent()){
+                        throw new BusinessException(AssetErrorCode.ASSET_CODE_NOT_EXIST,"资产编码:"+code);
+                    }else {
                         EntityOperations
-                                .doUpdate(assetRepository)
-                                .load(() -> old.get())
-                                .update(asset -> asset.out(bizInfo))
-                                .execute();
-                    });
+                            .doUpdate(assetRepository)
+                            .load(() -> old.get())
+                            .update(asset -> asset.out(bizInfo))
+                            .execute();
+                    }
                 });
     }
 
@@ -108,7 +113,6 @@ public class AssetDomainServiceImpl implements IAssetDomainService {
         String genBatchNo = IdUtil.simpleUUID();
         BatchInOutModel outModel = new BatchInOutModel();
         outModel.setBatchNo(transferModel.getBatchNo());
-        outModel.setGenBatchNo(genBatchNo);
         outModel.setInOutBizType(InOutBizType.OUT_TRANSFER);
         outModel.setOperateUser(transferModel.getOperateUser());
         outModel.setHouseId(transferModel.getTransferOutHouseId());
@@ -123,7 +127,6 @@ public class AssetDomainServiceImpl implements IAssetDomainService {
         inModel.setSkuId(transferModel.getSkuId());
         inModel.setOperateUser(transferModel.getOperateUser());
         inModel.setBatchNo(transferModel.getBatchNo());
-        inModel.setGenBatchNo(transferModel.getGenBatchNo());
         handleAssetIn(inModel);
         log.info("处理入库完成，仓库id:{},批次号:{},自动批号:{}", transferModel.getTransferOutHouseId(),transferModel.getBatchNo(),genBatchNo);
 

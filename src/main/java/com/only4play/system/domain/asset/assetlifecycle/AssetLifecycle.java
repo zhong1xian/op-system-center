@@ -25,7 +25,6 @@ import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-
 import com.only4play.system.domain.asset.assetrecord.InOutType;
 import com.only4play.system.domain.asset.assetrecord.InOutTypeConverter;
 import lombok.Data;
@@ -53,6 +52,8 @@ public class AssetLifecycle extends BaseJpaAggregate {
 
   @FieldDesc(name = "资产Id")
   private Long assetsId;
+
+  private Long skuId;
 
   @FieldDesc(name = "唯一编码")
   private String uniqueCode;

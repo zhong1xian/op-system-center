@@ -43,7 +43,7 @@ import java.util.Objects;
 @GenQueryRequest(pkgName = "com.only4play.system.domain.asset.asset.request")
 @GenResponse(pkgName = "com.only4play.system.domain.asset.asset.response")
 @Entity
-@Table(name = "asset_lifecycle")
+@Table(name = "asset")
 @Data
 public class Asset extends BaseJpaAggregate {
 
@@ -75,7 +75,7 @@ public class Asset extends BaseJpaAggregate {
      */
     public void in(AssetBizInfo bizInfo){
         if(Objects.equals(ValidStatus.VALID,this.getValidStatus())){
-            throw new BusinessException(AssetErrorCode.ASSETS_HAS_IN);
+            throw new BusinessException(AssetErrorCode.ASSET_HAS_IN);
         }
         setValidStatus(ValidStatus.VALID);
         registerEvent(new AssetEvents.AssetInEvent(this, bizInfo));
@@ -86,7 +86,7 @@ public class Asset extends BaseJpaAggregate {
      */
     public void out(AssetBizInfo bizInfo){
         if(Objects.equals(ValidStatus.INVALID,this.getValidStatus())){
-            throw new BusinessException(AssetErrorCode.ASSETS_HAS_OUT);
+            throw new BusinessException(AssetErrorCode.ASSET_HAS_OUT);
         }
         setValidStatus(ValidStatus.INVALID);
         registerEvent(new AssetEvents.AssetOutEvent(this, bizInfo));

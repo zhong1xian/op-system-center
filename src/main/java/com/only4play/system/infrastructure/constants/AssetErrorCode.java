@@ -6,8 +6,9 @@ import java.util.Optional;
 
 public enum AssetErrorCode implements BaseEnum<AssetErrorCode> {
 
-    ASSETS_HAS_IN(10000026,"商品已经入库"),
-    ASSETS_HAS_OUT(10000027,"商品已经出库")
+    ASSET_HAS_IN(10010026,"资产已经入库"),
+    ASSET_HAS_OUT(10010027,"资产已经出库"),
+    ASSET_CODE_NOT_EXIST(10010028,"资产编码不存在")
     ;
 
   AssetErrorCode(Integer code, String name) {

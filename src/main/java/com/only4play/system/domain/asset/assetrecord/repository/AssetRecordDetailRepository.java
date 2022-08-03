@@ -2,8 +2,8 @@
 package com.only4play.system.domain.asset.assetrecord.repository;
 
 import com.only4play.jpa.support.BaseRepository;
-import com.only4play.system.domain.asset.assetrecord.InOutRecordAssetsRel;
+import com.only4play.system.domain.asset.assetrecord.AssetRecordDetail;
 import java.lang.Long;
 
-public interface InOutRecordAssetsRelRepository extends BaseRepository<InOutRecordAssetsRel, Long> {
+public interface AssetRecordDetailRepository extends BaseRepository<AssetRecordDetail, Long> {
 }

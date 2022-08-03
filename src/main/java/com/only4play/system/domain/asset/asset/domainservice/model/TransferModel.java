@@ -26,7 +26,4 @@ public class TransferModel {
     @FieldDesc(name = "批次号")
     private String batchNo;
 
-    @FieldDesc(name = "自动生成批次号")
-    private String genBatchNo;
-
 }
