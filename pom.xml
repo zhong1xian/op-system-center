@@ -119,6 +119,11 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-logging</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.only4play</groupId>
+      <artifactId>op-commons</artifactId>
+      <version>3.0.2-SNAPSHOT</version>
+    </dependency>
 
   </dependencies>
   <profiles>

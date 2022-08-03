@@ -42,8 +42,11 @@ import lombok.Data;
 @Data
 public class AssetInOutRecord extends BaseJpaAggregate {
 
-  @FieldDesc(name = "批次号")
+  @FieldDesc(name = "手动录入批次号,仅用于展示")
   private String batchNo;
+
+  @FieldDesc(name = "自动生成的批次号，防止重复")
+  private String genBatchNo;
 
   @FieldDesc(name = "出入库业务类型")
   @Convert(converter = InOutBizTypeConverter.class)
@@ -55,6 +58,9 @@ public class AssetInOutRecord extends BaseJpaAggregate {
   @FieldDesc(name = "出入类型")
   @Convert(converter = InOutTypeConverter.class)
   private InOutType inOutType;
+
+  @FieldDesc(name = "总数")
+  private Integer totalCount;
 
   @Convert(converter = ValidStatusConverter.class)
   @IgnoreUpdater

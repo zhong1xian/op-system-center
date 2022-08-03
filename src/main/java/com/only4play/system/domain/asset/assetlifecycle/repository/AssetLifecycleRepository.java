@@ -6,4 +6,5 @@ import com.only4play.system.domain.asset.assetlifecycle.AssetLifecycle;
 import java.lang.Long;
 
 public interface AssetLifecycleRepository extends BaseRepository<AssetLifecycle, Long> {
+
 }

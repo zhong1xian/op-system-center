@@ -23,5 +23,5 @@ spring:
       hibernate:
         generate_statistics: false
         jdbc:
-          batch_size: 100
+          batch_size: 1000
         order_inserts: true

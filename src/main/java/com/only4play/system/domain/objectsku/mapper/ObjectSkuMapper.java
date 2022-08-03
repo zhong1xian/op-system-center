@@ -12,30 +12,32 @@ import com.only4play.system.domain.objectsku.request.ObjectSkuUpdateRequest;
 import com.only4play.system.domain.objectsku.response.ObjectSkuResponse;
 import com.only4play.system.domain.objectsku.updater.ObjectSkuUpdater;
 import com.only4play.system.domain.objectsku.vo.ObjectSkuVO;
+import com.only4play.system.infrastructure.converter.CustomMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(
-    uses = {
-        GenericEnumMapper.class,
-        DateMapper.class
-    }
+        uses = {
+                GenericEnumMapper.class,
+                DateMapper.class,
+                CustomMapper.class
+        }
 )
 public interface ObjectSkuMapper {
-  ObjectSkuMapper INSTANCE = Mappers.getMapper(ObjectSkuMapper.class);
+    ObjectSkuMapper INSTANCE = Mappers.getMapper(ObjectSkuMapper.class);
 
-  ObjectSku dtoToEntity(ObjectSkuCreator dto);
+    ObjectSku dtoToEntity(ObjectSkuCreator dto);
 
-  ObjectSkuUpdater request2Updater(ObjectSkuUpdateRequest request);
+    ObjectSkuUpdater request2Updater(ObjectSkuUpdateRequest request);
 
-  ObjectSkuCreator request2Dto(ObjectSkuCreateRequest request);
+    ObjectSkuCreator request2Dto(ObjectSkuCreateRequest request);
 
-  ObjectSkuQuery request2Query(ObjectSkuQueryRequest request);
+    ObjectSkuQuery request2Query(ObjectSkuQueryRequest request);
 
-  ObjectSkuResponse vo2Response(ObjectSkuVO vo);
+    ObjectSkuResponse vo2Response(ObjectSkuVO vo);
 
-  default ObjectSkuResponse vo2CustomResponse(ObjectSkuVO vo) {
-    ObjectSkuResponse response = vo2Response(vo);
-    return response;
-  }
+    default ObjectSkuResponse vo2CustomResponse(ObjectSkuVO vo) {
+        ObjectSkuResponse response = vo2Response(vo);
+        return response;
+    }
 }

@@ -25,6 +25,9 @@ import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+
+import com.only4play.system.domain.asset.assetrecord.InOutType;
+import com.only4play.system.domain.asset.assetrecord.InOutTypeConverter;
 import lombok.Data;
 
 @GenVo(pkgName = "com.only4play.system.domain.asset.assetlifecycle.vo")
@@ -68,8 +71,18 @@ public class AssetLifecycle extends BaseJpaAggregate {
   @Convert(converter = InOutBizTypeConverter.class)
   private InOutBizType inOutBizType;
 
+  @FieldDesc(name = "出入类型")
+  @Convert(converter = InOutTypeConverter.class)
+  private InOutType inOutType;
+
   @FieldDesc(name = "操作人")
   private String operateUser;
+
+  @FieldDesc(name = "唯一批次号")
+  private String genBatchNo;
+
+  @FieldDesc(name = "批次号")
+  private String batchNo;
 
   @Convert(converter = ValidStatusConverter.class)
   @IgnoreUpdater

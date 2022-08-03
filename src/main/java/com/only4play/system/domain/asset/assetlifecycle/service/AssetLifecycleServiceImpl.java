@@ -6,6 +6,7 @@ import com.only4play.common.exception.BusinessException;
 import com.only4play.common.model.PageRequestWrapper;
 import com.only4play.jpa.support.EntityOperations;
 import com.only4play.system.domain.asset.assetlifecycle.AssetLifecycle;
+import com.only4play.system.domain.asset.assetlifecycle.QAssetLifecycle;
 import com.only4play.system.domain.asset.assetlifecycle.creator.AssetLifecycleCreator;
 import com.only4play.system.domain.asset.assetlifecycle.mapper.AssetLifecycleMapper;
 import com.only4play.system.domain.asset.assetlifecycle.query.AssetLifecycleQuery;
@@ -15,6 +16,7 @@ import com.only4play.system.domain.asset.assetlifecycle.vo.AssetLifecycleVO;
 import com.querydsl.core.BooleanBuilder;
 import java.lang.Long;
 import java.lang.Override;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +45,17 @@ public class AssetLifecycleServiceImpl implements IAssetLifecycleService {
     .update(e -> e.init())
     .execute();
     return assetLifecycle.isPresent() ? assetLifecycle.get().getId() : 0;
+  }
+
+  @Override
+  public void batchCreateLifecycle(String batchNo, List<AssetLifecycleCreator> creatorList) {
+    BooleanBuilder bb = new BooleanBuilder().and(QAssetLifecycle.assetLifecycle.genBatchNo.eq(batchNo));
+    Optional<AssetLifecycle> one = assetLifecycleRepository.findOne(bb);
+    if(one.isPresent()){
+      return;
+    }
+    List<AssetLifecycle> assetLifecycles = creatorList.stream().map(c -> AssetLifecycleMapper.INSTANCE.dtoToEntity(c)).collect(Collectors.toList());
+    assetLifecycleRepository.saveAll(assetLifecycles);
   }
 
   /**

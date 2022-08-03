@@ -7,6 +7,8 @@ import com.only4play.system.domain.asset.assetlifecycle.query.AssetLifecycleQuer
 import com.only4play.system.domain.asset.assetlifecycle.updater.AssetLifecycleUpdater;
 import com.only4play.system.domain.asset.assetlifecycle.vo.AssetLifecycleVO;
 import java.lang.Long;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 
 public interface IAssetLifecycleService {
@@ -14,6 +16,13 @@ public interface IAssetLifecycleService {
    * create
    */
   Long createAssetLifecycle(AssetLifecycleCreator creator);
+
+  /**
+   * 批量保存
+   * @param batchNo 批号
+   * @param creatorList
+   */
+  void batchCreateLifecycle(String batchNo,List<AssetLifecycleCreator> creatorList);
 
   /**
    * update
