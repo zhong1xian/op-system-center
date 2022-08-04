@@ -1,7 +1,8 @@
-package com.only4play.system.domain.trade.order;
+package com.only4play.system.infrastructure.elastic;
 
 import com.only4play.common.annotation.FieldDesc;
 import com.only4play.order.commons.pay.PayItem;
+import com.only4play.system.domain.trade.order.domainservice.model.OrderItemModel;
 import com.only4play.system.domain.trade.orderitem.OrderItem;
 import com.only4play.system.infrastructure.model.CodeValue;
 import java.math.BigDecimal;
@@ -27,23 +28,24 @@ public class OrderDocument {
 
   private BigDecimal totalAmount;
 
-  private BigDecimal realAmount;
-
   private String orderStatusTxt;
 
   private Integer orderStatus;
 
-  @FieldDesc(name = "用户ID")
-  private Long userId;
+  private Long accountId;
+
+  private Integer accountType;
+
+  private String phone;
 
   @Field(type = FieldType.Nested)
-  private List<CodeValue> orderAttr;
+  private List<CodeValue> attrs;
 
   @Field(type = FieldType.Nested)
-  private List<PayItem> payItems;
+  private List<PayItem> payList;
 
   @Field(type = FieldType.Nested)
-  private List<OrderItem> orderItems;
+  private List<OrderItemModel> orderItems;
 
   private Long payTime;
 

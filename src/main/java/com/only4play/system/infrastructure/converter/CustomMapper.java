@@ -7,6 +7,7 @@ import com.only4play.system.domain.template.templateitem.InputType;
 import com.only4play.system.domain.trade.order.OrderState;
 import com.only4play.system.domain.trade.order.OrderType;
 import com.only4play.system.domain.trade.orderlifecycle.OrderOperateType;
+import com.only4play.system.domain.user.AccountType;
 
 /**
  * 枚举自定义转化
@@ -44,6 +45,15 @@ public class CustomMapper {
   public OrderType int2OrderType(Integer code){
     return OrderType.of(code).orElse(OrderType.CHARGE);
   }
+
+  public Integer accountType2Int(AccountType accountType){
+    return accountType.getCode();
+  }
+
+  public AccountType int2AccountType(Integer code){
+    return AccountType.of(code).orElse(AccountType.PERSONAL);
+  }
+
 
   public Integer opType2Int(OrderOperateType type){
     return type.getCode();

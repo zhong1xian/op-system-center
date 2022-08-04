@@ -1,7 +1,7 @@
 package com.only4play.system.domain.trade.order;
 
+import cn.hutool.core.collection.IterUtil;
 import cn.hutool.core.util.NumberUtil;
-import com.google.common.collect.Iterables;
 import com.only4play.codegen.processor.api.GenCreateRequest;
 import com.only4play.codegen.processor.api.GenQueryRequest;
 import com.only4play.codegen.processor.api.GenResponse;
@@ -25,7 +25,9 @@ import com.only4play.common.exception.BusinessException;
 import com.only4play.jpa.converter.ValidStatusConverter;
 import com.only4play.jpa.support.BaseJpaAggregate;
 import com.only4play.order.commons.pay.PayItem;
-import com.only4play.system.domain.trade.order.domainservice.model.OrderItemModel;
+import com.only4play.system.domain.trade.order.domainservice.model.OrderCompleteModel;
+import com.only4play.system.domain.trade.order.domainservice.model.OrderCreateModel;
+import com.only4play.system.domain.trade.order.events.OrderEvents.OrderCreateEvent;
 import com.only4play.system.domain.user.AccountType;
 import com.only4play.system.domain.user.AccountTypeConverter;
 import com.only4play.system.infrastructure.constants.OrderErrorCode;
@@ -33,6 +35,7 @@ import com.only4play.system.infrastructure.converter.CodeValueListConverter;
 import com.only4play.system.infrastructure.converter.PayItemListConverter;
 import com.only4play.system.infrastructure.model.CodeValue;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Column;
@@ -109,6 +112,9 @@ public class OrderBase extends BaseJpaAggregate {
   @IgnoreCreator
   private ValidStatus validStatus;
 
+  /**
+   * 系统压力不大的时候可以这里放，压力大千万不要放这里，额外的表或者es都可以
+   */
   @FieldDesc(name = "订单信息")
   @Convert(converter = CodeValueListConverter.class)
   private List<CodeValue> attrs;
@@ -119,12 +125,17 @@ public class OrderBase extends BaseJpaAggregate {
   @IgnoreCreator
   private ValidStatus invoiceFlag;
 
-  public void init(List<OrderItemModel> itemInfoList) {
+  /**
+   * 订单初始化
+   * @param createModel
+   */
+  public void init(OrderCreateModel createModel) {
     setValidStatus(ValidStatus.VALID);
     setInvoiceFlag(ValidStatus.INVALID);
     BigDecimal total = getTotalAmount();
     //如果有虚拟资产的抵扣
-    if (Objects.nonNull(getPayList()) && Iterables.size(getPayList()) > 0) {
+    if (!IterUtil.isEmpty(createModel.getPayList())) {
+      setPayList(createModel.getPayList());
       BigDecimal hasPay = payList.stream().map(p -> p.getMoney())
           .reduce(BigDecimal.ZERO, (a, b) -> NumberUtil.add(a, b));
       if (NumberUtil.isGreater(hasPay, total)) {
@@ -138,6 +149,7 @@ public class OrderBase extends BaseJpaAggregate {
       }
     } else {
       //没有虚拟资产抵扣
+      setPayList(Collections.EMPTY_LIST);
       if (NumberUtil.equals(total, BigDecimal.ZERO)) {
         setOrderState(OrderState.PAY_SUCCESS);
         setWaitPay(BigDecimal.ZERO);
@@ -146,20 +158,40 @@ public class OrderBase extends BaseJpaAggregate {
         setOrderState(OrderState.WAIT_PAY);
       }
     }
+    registerEvent(new OrderCreateEvent(this,createModel));
   }
 
+  /**
+   * 订单完成
+   * @param completeModel
+   */
+  public void complete(OrderCompleteModel completeModel){
+    if(!Objects.equals(OrderState.WAIT_PAY,getOrderState())){
+      throw new BusinessException(OrderErrorCode.ORDER_NOT_WAIT_PAY);
+    }
+    if(IterUtil.isEmpty(completeModel.getPayItemList())){
+      throw new BusinessException(OrderErrorCode.PAY_LIST_IS_NULL);
+    }
+    BigDecimal hasPay = completeModel.getPayItemList().stream().map(p -> p.getMoney())
+        .reduce(BigDecimal.ZERO, (a, b) -> NumberUtil.add(a, b));
+    if(!NumberUtil.equals(hasPay,getWaitPay())){
+      throw new BusinessException(OrderErrorCode.PAY_AMOUNT_NOT_EQUAL_WAIT_PAY);
+    }
+    setPayTime(completeModel.getPayTime());
+    List<PayItem> payItemList = getPayList();
+    payItemList.addAll(completeModel.getPayItemList());
+    setPayList(payItemList);
+    setOrderState(OrderState.PAY_SUCCESS);
+  }
 
   /**
-   * 根据订单类型获取初始状态
-   *
-   * @param orderType
-   * @return
+   * 取消订单
    */
-  private OrderState getInitStateByOrderType(OrderType orderType, BigDecimal realMoney) {
-    if (NumberUtil.equals(realMoney, BigDecimal.ZERO)) {
-      return OrderState.PAY_SUCCESS;
+  public void cancel(){
+    if(!Objects.equals(OrderState.WAIT_PAY,getOrderState())){
+      throw new BusinessException(OrderErrorCode.ORDER_NOT_WAIT_PAY);
     }
-    return OrderState.WAIT_PAY;
+    setOrderState(OrderState.ABANDON);
   }
 
   public void valid() {

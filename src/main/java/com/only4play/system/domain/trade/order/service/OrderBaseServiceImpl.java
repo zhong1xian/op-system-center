@@ -38,11 +38,7 @@ public class OrderBaseServiceImpl implements IOrderBaseService {
    */
   @Override
   public Long createOrderBase(OrderBaseCreator creator) {
-    Optional<OrderBase> orderBase = EntityOperations.doCreate(orderBaseRepository)
-    .create(() -> OrderBaseMapper.INSTANCE.dtoToEntity(creator))
-    .update(e -> e.init())
-    .execute();
-    return orderBase.isPresent() ? orderBase.get().getId() : 0;
+    return 0L;
   }
 
   /**

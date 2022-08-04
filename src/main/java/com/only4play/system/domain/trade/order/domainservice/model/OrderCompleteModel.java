@@ -11,4 +11,6 @@ public class OrderCompleteModel {
 
   private List<PayItem> payItemList;
 
+  private Long payTime;
+
 }

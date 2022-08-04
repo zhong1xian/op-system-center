@@ -27,7 +27,7 @@ public class AssetServiceTest {
   public void testWarehouseCreate(){
     WarehouseCreator creator = new WarehouseCreator();
     creator.setCreateUser("默认");
-    creator.setName("仓库1");
+    creator.setName("仓库2");
     creator.setCode("warehouse");
     creator.setAddress("默认地址");
     warehouseService.createWarehouse(creator);

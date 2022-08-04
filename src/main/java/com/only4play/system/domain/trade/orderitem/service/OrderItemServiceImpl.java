@@ -40,7 +40,7 @@ public class OrderItemServiceImpl implements IOrderItemService {
   public Long createOrderItem(OrderItemCreator creator) {
     Optional<OrderItem> orderItem = EntityOperations.doCreate(orderItemRepository)
     .create(() -> OrderItemMapper.INSTANCE.dtoToEntity(creator))
-    .update(e -> e.init())
+    .update(e -> {})
     .execute();
     return orderItem.isPresent() ? orderItem.get().getId() : 0;
   }
@@ -53,28 +53,6 @@ public class OrderItemServiceImpl implements IOrderItemService {
     EntityOperations.doUpdate(orderItemRepository)
     .loadById(updater.getId())
     .update(e -> updater.updateOrderItem(e))
-    .execute();
-  }
-
-  /**
-   * valid
-   */
-  @Override
-  public void validOrderItem(Long id) {
-    EntityOperations.doUpdate(orderItemRepository)
-    .loadById(id)
-    .update(e -> e.valid())
-    .execute();
-  }
-
-  /**
-   * invalid
-   */
-  @Override
-  public void invalidOrderItem(Long id) {
-    EntityOperations.doUpdate(orderItemRepository)
-    .loadById(id)
-    .update(e -> e.invalid())
     .execute();
   }
 

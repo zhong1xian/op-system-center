@@ -15,6 +15,7 @@ import com.only4play.codegen.processor.updater.IgnoreUpdater;
 import com.only4play.codegen.processor.service.GenServiceImpl;
 import com.only4play.codegen.processor.updater.GenUpdater;
 import com.only4play.codegen.processor.vo.GenVo;
+import com.only4play.common.annotation.FieldDesc;
 import com.only4play.common.constants.ValidStatus;
 import com.only4play.jpa.converter.ValidStatusConverter;
 import com.only4play.jpa.support.BaseJpaAggregate;

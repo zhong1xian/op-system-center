@@ -3,6 +3,7 @@ package com.only4play.system.domain.trade.orderitem.mapper;
 
 import com.only4play.common.mapper.DateMapper;
 import com.only4play.common.mapper.GenericEnumMapper;
+import com.only4play.system.domain.trade.order.domainservice.model.OrderItemModel;
 import com.only4play.system.domain.trade.orderitem.OrderItem;
 import com.only4play.system.domain.trade.orderitem.creator.OrderItemCreator;
 import com.only4play.system.domain.trade.orderitem.query.OrderItemQuery;
@@ -29,6 +30,10 @@ public interface OrderItemMapper {
   OrderItemUpdater request2Updater(OrderItemUpdateRequest request);
 
   OrderItemCreator request2Dto(OrderItemCreateRequest request);
+
+  OrderItemCreator model2Creator(OrderItemModel itemModel);
+
+  OrderItem model2Entity(OrderItemModel itemModel);
 
   OrderItemQuery request2Query(OrderItemQueryRequest request);
 

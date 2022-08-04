@@ -2,21 +2,19 @@ package com.only4play.system.domain.trade.order.domainservice.model;
 
 import com.only4play.common.annotation.FieldDesc;
 import java.math.BigDecimal;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 
-@Builder
-@Getter
+@Data
 public class OrderItemModel {
 
   @FieldDesc(name = "真实金额")
   private BigDecimal realAmount;
 
   @FieldDesc(name = "计量数量")
-  private BigDecimal itemCount;
+  private Integer itemCount;
 
   @FieldDesc(name = "skuId")
-  private String skuId;
+  private Long skuId;
 
   @FieldDesc(name = "商品名称")
   private String goodsName;

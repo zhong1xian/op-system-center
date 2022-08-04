@@ -2,7 +2,6 @@ package com.only4play.system.infrastructure.converter;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.only4play.system.infrastructure.model.CodeValue;
 import java.lang.reflect.Type;
 import java.util.Collections;
@@ -16,7 +15,7 @@ public class CodeValueListConverter implements AttributeConverter<List<CodeValue
 
     @Override
     public String convertToDatabaseColumn(List<CodeValue> feeRules) {
-        return JSON.toJSONString(feeRules, SerializerFeature.WriteClassName);
+        return JSON.toJSONString(feeRules);
     }
 
     @Override

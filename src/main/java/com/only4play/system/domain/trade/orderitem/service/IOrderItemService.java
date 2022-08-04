@@ -21,16 +21,6 @@ public interface IOrderItemService {
   void updateOrderItem(OrderItemUpdater updater);
 
   /**
-   * valid
-   */
-  void validOrderItem(Long id);
-
-  /**
-   * invalid
-   */
-  void invalidOrderItem(Long id);
-
-  /**
    * findById
    */
   OrderItemVO findById(Long id);

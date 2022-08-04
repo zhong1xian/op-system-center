@@ -5,10 +5,19 @@ import lombok.Data;
 @Data
 public class CodeValue {
 
-  private String code;
+  /**
+   * key 键
+   */
+  private String k;
 
-  private String value;
+  /**
+   * value 值
+   */
+  private String v;
 
-  private String label;
+  /**
+   * label 标签
+   */
+  private String l;
 
 }

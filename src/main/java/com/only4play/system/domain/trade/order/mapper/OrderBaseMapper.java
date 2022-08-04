@@ -14,6 +14,7 @@ import com.only4play.system.domain.trade.order.response.OrderBaseResponse;
 import com.only4play.system.domain.trade.order.updater.OrderBaseUpdater;
 import com.only4play.system.domain.trade.order.vo.OrderBaseVO;
 import com.only4play.system.infrastructure.converter.CustomMapper;
+import com.only4play.system.infrastructure.elastic.OrderDocument;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -36,6 +37,8 @@ public interface OrderBaseMapper {
   OrderBaseQuery request2Query(OrderBaseQueryRequest request);
 
   OrderBaseResponse vo2Response(OrderBaseVO vo);
+
+  OrderDocument entity2Document(OrderBase entity);
 
   OrderBase model2Entity(OrderCreateModel createModel);
 
