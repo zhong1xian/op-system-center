@@ -1,6 +1,7 @@
 package com.only4play.system.domain.trade.order;
 
 import cn.hutool.core.util.NumberUtil;
+import com.google.common.collect.Iterables;
 import com.only4play.codegen.processor.api.GenCreateRequest;
 import com.only4play.codegen.processor.api.GenQueryRequest;
 import com.only4play.codegen.processor.api.GenResponse;
@@ -20,14 +21,20 @@ import com.only4play.codegen.processor.vo.GenVo;
 import com.only4play.common.annotation.FieldDesc;
 import com.only4play.common.annotation.TypeConverter;
 import com.only4play.common.constants.ValidStatus;
+import com.only4play.common.exception.BusinessException;
 import com.only4play.jpa.converter.ValidStatusConverter;
 import com.only4play.jpa.support.BaseJpaAggregate;
 import com.only4play.order.commons.pay.PayItem;
+import com.only4play.system.domain.trade.order.domainservice.model.OrderItemModel;
+import com.only4play.system.domain.user.AccountType;
+import com.only4play.system.domain.user.AccountTypeConverter;
+import com.only4play.system.infrastructure.constants.OrderErrorCode;
 import com.only4play.system.infrastructure.converter.CodeValueListConverter;
 import com.only4play.system.infrastructure.converter.PayItemListConverter;
 import com.only4play.system.infrastructure.model.CodeValue;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
@@ -61,14 +68,12 @@ public class OrderBase extends BaseJpaAggregate {
   @FieldDesc(name = "订单金额")
   private BigDecimal totalAmount;
 
-  @NotNull(message = "订单真实金额不能为空")
-  @FieldDesc(name = "真实金额")
-  private BigDecimal realAmount;
+  @FieldDesc(name = "账号Id")
+  private Long accountId;
 
-  @NotNull(message = "用户Id不能为空")
-  @QueryItem
-  @FieldDesc(name = "用户id")
-  private Long userId;
+  @FieldDesc(name = "账号类型")
+  @Convert(converter = AccountTypeConverter.class)
+  private AccountType accountType;
 
   @FieldDesc(name = "订单类型、订单类型创建不同的状态机")
   @Convert(converter = OrderTypeConverter.class)
@@ -83,6 +88,9 @@ public class OrderBase extends BaseJpaAggregate {
   @Convert(converter = PayItemListConverter.class)
   @Column(columnDefinition = "text")
   private List<PayItem> payList;
+
+  @FieldDesc(name = "待支付金额")
+  private BigDecimal waitPay;
 
   @IgnoreCreator
   @IgnoreUpdater
@@ -104,43 +112,61 @@ public class OrderBase extends BaseJpaAggregate {
   @FieldDesc(name = "订单信息")
   @Convert(converter = CodeValueListConverter.class)
   private List<CodeValue> attrs;
-  /**
-   * 初始化订单
-   */
-//  public void initOrder(OrderCreateRequest request) {
-////    setFlowNo(WaterFlowUtils.nextWaterFlow());
-////    setValidStatus(ValidStatus.VALID);
-////    setTotalAmount(NumberUtil.add(request.getTotalAmount()));
-////    setOrderType(OrderType.of(request.getOrderType()).orElseThrow(() -> new BusinessException(
-////        OrderErrorCode.ORDER_TYPE_ILLEGAL)));
-////    if(Objects.isNull(request.getPayList())){
-////      setPayList(Collections.EMPTY_LIST);
-////    }else {
-////      setPayList(request.getPayList());
-////    }
-////    setOrderState(getInitStateByOrderType(getOrderType(),request.getRealAmount()));
-////    registerEvent(new OrderCreateEvent(this,request.getOrderItems()));
-//  }
 
-  public void init(){}
+  @FieldDesc(name = "是否开票")
+  @Convert(converter = ValidStatusConverter.class)
+  @IgnoreUpdater
+  @IgnoreCreator
+  private ValidStatus invoiceFlag;
+
+  public void init(List<OrderItemModel> itemInfoList) {
+    setValidStatus(ValidStatus.VALID);
+    setInvoiceFlag(ValidStatus.INVALID);
+    BigDecimal total = getTotalAmount();
+    //如果有虚拟资产的抵扣
+    if (Objects.nonNull(getPayList()) && Iterables.size(getPayList()) > 0) {
+      BigDecimal hasPay = payList.stream().map(p -> p.getMoney())
+          .reduce(BigDecimal.ZERO, (a, b) -> NumberUtil.add(a, b));
+      if (NumberUtil.isGreater(hasPay, total)) {
+        throw new BusinessException(OrderErrorCode.PAY_TOO_BIG);
+      }else if(NumberUtil.equals(hasPay,total)){
+        setOrderState(OrderState.PAY_SUCCESS);
+        setWaitPay(BigDecimal.ZERO);
+      }else {
+        setOrderState(OrderState.WAIT_PAY);
+        setWaitPay(NumberUtil.sub(total,hasPay));
+      }
+    } else {
+      //没有虚拟资产抵扣
+      if (NumberUtil.equals(total, BigDecimal.ZERO)) {
+        setOrderState(OrderState.PAY_SUCCESS);
+        setWaitPay(BigDecimal.ZERO);
+      } else {
+        setWaitPay(total);
+        setOrderState(OrderState.WAIT_PAY);
+      }
+    }
+  }
+
 
   /**
    * 根据订单类型获取初始状态
+   *
    * @param orderType
    * @return
    */
-  private OrderState getInitStateByOrderType(OrderType orderType,BigDecimal realMoney){
-    if(NumberUtil.equals(realMoney,BigDecimal.ZERO)){
+  private OrderState getInitStateByOrderType(OrderType orderType, BigDecimal realMoney) {
+    if (NumberUtil.equals(realMoney, BigDecimal.ZERO)) {
       return OrderState.PAY_SUCCESS;
     }
     return OrderState.WAIT_PAY;
   }
 
-  public void valid(){
+  public void valid() {
     setValidStatus(ValidStatus.VALID);
   }
 
-  public void invalid(){
+  public void invalid() {
     setValidStatus(ValidStatus.INVALID);
   }
 }

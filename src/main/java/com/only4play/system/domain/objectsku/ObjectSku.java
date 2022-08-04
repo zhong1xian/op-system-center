@@ -62,6 +62,15 @@ public class ObjectSku extends BaseJpaAggregate {
   @TypeConverter(toTypeFullName = "java.lang.Integer")
   private SkuType skuType;
 
+  /**
+   * 用于开票归类，按照国家编码目录配置
+   */
+  @FieldDesc(name = "税务分类编码")
+  private String taxCategoryNo;
+
+  @FieldDesc(name = "计量单位")
+  private String measureUnit;
+
   @FieldDesc(name = "子sku ID list")
   @Convert(converter = ListLongConverter.class)
   private List<Long> children;
