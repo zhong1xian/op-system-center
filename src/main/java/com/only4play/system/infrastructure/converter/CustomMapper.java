@@ -4,6 +4,9 @@ package com.only4play.system.infrastructure.converter;
 import com.only4play.system.domain.objectsku.SkuType;
 import com.only4play.system.domain.template.selectdict.DictType;
 import com.only4play.system.domain.template.templateitem.InputType;
+import com.only4play.system.domain.trade.order.OrderState;
+import com.only4play.system.domain.trade.order.OrderType;
+import com.only4play.system.domain.trade.orderlifecycle.OrderOperateType;
 
 /**
  * 枚举自定义转化
@@ -33,5 +36,30 @@ public class CustomMapper {
   public SkuType int2SkuType(Integer code){
     return SkuType.of(code).orElse(SkuType.SINGLE);
   }
+
+  public Integer orderType2Int(OrderType orderType){
+    return orderType.getCode();
+  }
+
+  public OrderType int2OrderType(Integer code){
+    return OrderType.of(code).orElse(OrderType.CHARGE);
+  }
+
+  public Integer opType2Int(OrderOperateType type){
+    return type.getCode();
+  }
+
+  public OrderOperateType int2OpType(Integer code){
+    return OrderOperateType.of(code).orElse(OrderOperateType.AUTH_SUCCESS);
+  }
+
+  public Integer status2OrderState(OrderState state){
+    return state.getCode();
+  }
+
+  public OrderState state2Int(Integer code){
+    return OrderState.of(code).orElse(OrderState.WAIT_PAY);
+  }
+
 
 }
