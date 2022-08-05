@@ -3,7 +3,6 @@ package com.only4play.system.infrastructure.elastic;
 import com.only4play.common.annotation.FieldDesc;
 import com.only4play.order.commons.pay.PayItem;
 import com.only4play.system.domain.trade.order.domainservice.model.OrderItemModel;
-import com.only4play.system.domain.trade.orderitem.OrderItem;
 import com.only4play.system.infrastructure.model.CodeValue;
 import java.math.BigDecimal;
 import java.util.List;
