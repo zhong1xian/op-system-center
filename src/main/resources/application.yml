@@ -27,6 +27,6 @@ spring:
         order_inserts: true
 es:
   nodes:
-    - search.shutu516.com:80
-  username: elastic
-  password: only4play
+    - xxxx
+  username: xx
+  password: xx
